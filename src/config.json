@@ -3,7 +3,7 @@
     "url": "https://blog.siruichen.me",
     "title": "DismalMango's Blog",
     "description": "This is Sirui Chen's blog. Try to have fun here",
-    "keywords": "Gyoza,blog,Astro,theme,lxchapu,full-stack",
+    "keywords": "blog,Astro,theme,lxchapu,full-stack",
     "lang": "zh-CN",
     "favicon": "/favicon.ico",
     "appleTouchIcon": "/apple-touch-icon.png"
@@ -11,12 +11,12 @@
   "author": {
     "name": "Sirui Chen",
     "twitterId": "@lxchapu",
-    "avatar": "https://s2.loli.net/2024/04/30/ozsnuS5Ihf3xMBG.webp"
+    "avatar": "https://i.ibb.co/FL2Nx896/image.jpg"
   },
   "hero": {
-    "name": "Gyoza",
-    "bio": "A static blog template build with Astro and React.",
-    "description": "Clean, Cute, Fast.",
+    "name": "Sirui Chen",
+    "bio": "A Master student of Information Technology at the University of New South Wales",
+    "description": "Full-stack, Animation, Manga, Cute, Fun, Meow.",
     "socials": [
       {
         "name": "Github",
@@ -27,7 +27,7 @@
       {
         "name": "X",
         "icon": "icon-x",
-        "url": "",
+        "url": "https://x.com/siruichen333?s=21",
         "color": "rgb(36, 46, 54)"
       },
       {
@@ -101,7 +101,7 @@
     "serverURL": "https://waline.lxchapu.com"
   },
   "sponsor": {
-    "wechat": "https://object.lxchapu.com/bed%2F2024%2F0507_6e3e8f73df2d4e6d.webp"
+    "wechat": ""
   },
   "analytics": {
     "enable": false,
