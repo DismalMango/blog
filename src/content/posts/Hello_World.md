@@ -1,6 +1,7 @@
 ---
 title: 'Hello, World'
 date: 2025-06-23
+category: '随笔'
 ---
 
 ## Hello, World
