@@ -1,92 +1,131 @@
 ---
 title: Redux
 date: 2025-07-30
-category: ''
+category: 'React'
 ---
 
-![Screenshot 2025-07-30 at 6.58.25 pm](assets/Screenshot%202025-07-30%20at%206.58.25%E2%80%AFpm.png)
+![Screenshot 2025-12-28 at 12.10.47 pm](assets/Screenshot%202025-12-28%20at%2012.10.47%E2%80%AFpm.png)
 
-![Screenshot 2025-07-30 at 7.01.28 pm](assets/Screenshot%202025-07-30%20at%207.01.28%E2%80%AFpm.png)
+Store 存储数据
 
-![Screenshot 2025-07-30 at 7.02.46 pm](assets/Screenshot%202025-07-30%20at%207.02.46%E2%80%AFpm.png)
+Action修改数据
 
-![Screenshot 2025-07-30 at 7.03.37 pm](assets/Screenshot%202025-07-30%20at%207.03.37%E2%80%AFpm.png)
+通过dispatch来修改store数据
 
-![Screenshot 2025-07-30 at 7.05.02 pm](assets/Screenshot%202025-07-30%20at%207.05.02%E2%80%AFpm.png)
+Action是一个普通的js对象，包含type和payload 属性
 
-# Action Creator
+![Screenshot 2025-12-28 at 12.15.24 pm](assets/Screenshot%202025-12-28%20at%2012.15.24%E2%80%AFpm.png)
 
-useSelector
+Reducer
 
-useDispatch
+reducer是一个纯函数，将curState 和 action结合起来生成新的state
 
-![Screenshot 2025-07-31 at 1.00.17 am](assets/Screenshot%202025-07-31%20at%201.00.17%E2%80%AFam.png)
+![Screenshot 2025-12-28 at 12.16.27 pm](assets/Screenshot%202025-12-28%20at%2012.16.27%E2%80%AFpm.png)
 
-![Screenshot 2025-07-31 at 1.01.08 am](assets/Screenshot%202025-07-31%20at%201.01.08%E2%80%AFam.png)
+`newState = reducer(curState, action)`
 
-## Redux vs. Context API
+reducer返回一个新的state而不是修改原有state
 
-In this lecture, we compare Redux with React's Context API to understand their differences, advantages, and appropriate use cases.
+```js
+function reducer(curState, action) {
+  state.name = action.payload.name // 错误
+  return { ...curState, name: action.payload.name } // 正确
+}
+```
 
-Many developers have started viewing the Context API, especially when combined with `useReducer`, as a complete replacement for Redux. While this can be true in some situations, it is important not to follow trends blindly but to have a nuanced and fact-based discussion.
+`store.dispatch(action)` 中的action派发给reducer
 
-This video summarizes what we have learned about both solutions for managing global state by examining their pros and cons, and ultimately provides recommendations on when to use Context and when to use Redux.
+参数一：现在的state
 
-### Advantages of Context API + useReducer
+参数二：dispatch传入的action
 
-- These features are already built into React, so no additional packages are required.
-- Using Redux requires installing extra packages, which adds more work and increases bundle size.
-- Setting up a single context with `useReducer` is straightforward: pass the state value into the context and provide it to the app.
+返回值：作为store之后存储的state
 
-However, for each additional state slice, you must repeat the setup from scratch. This can lead to "provider hell," where many context providers accumulate in the main app component.
+每调用一次`store.dispatch` 就会触发一次reducer
 
-### Advantages of Redux
+```js
+function reducer(curState = initState, action) {
+  // 有数据更新返回新的state
 
-- Redux requires more initial setup, but adding additional state slices is straightforward.
-- To add a new slice, create a new slice file and add reducers; no need to create another provider or custom hook.
-- Redux supports middleware, which allows handling asynchronous tasks within the state management tool.
+  // 没有数据更新，返回state，第一次数据更新，curState为undefined，返回默认值
+  return state
+}
+```
 
-The Context API has no built-in mechanism for asynchronous operations such as data fetching, as experienced in the worldwide application example. Middleware in Redux, although not necessarily easy to use, provides a way to handle asynchronous tasks.
+```js
+class App extends PureComponent {
+  constructor() {
+    super()
+    this.state = {
+      counter: 0,
+    }
+  }
+  componentDidMount() {
+    // subscribe 会在store变化的时候调用。只要 dispatch，就会触发 subscribe。
+    store.subscribe(() => {
+      const state = store.getState()
+      this.setState({ counter: state.counter })
+    })
+  }
+  render() {
+    const { counter } = this.state
+  }
+}
+```
 
-It is important to note that neither tool should be used for managing remote state extensively, but sometimes fetching a single data point from an API can be useful, as demonstrated with currency conversion in this section.
+`connect` 来自`react-redux`
 
-### Performance Considerations
+connect接受两个函数作为参数，返回一个高阶组件
 
-Optimizing the performance of the Context API and `useReducer` solution can require additional work, whereas Redux comes with many optimizations out of the box, including minimizing wasted renders.
+`connect`的返回值是一个高阶函数
 
-### Developer Tools
+![Screenshot 2025-12-29 at 12.10.41 pm](assets/Screenshot%202025-12-29%20at%2012.10.41%E2%80%AFpm.png)
 
-Redux offers excellent DevTools, while the Context API relies on the simpler React developer tools. This difference can be significant in applications with large, complex, and frequently updated state.
+dispatch 的==解耦操作==
 
-Although Redux appears to have more advantages than the Context API, the goal here is not to count pros and cons but to present facts for informed decision-making.
+![Screenshot 2025-12-29 at 4.07.38 pm](assets/Screenshot%202025-12-29%20at%204.07.38%E2%80%AFpm.png)
 
-## Usage Recommendations
+通过component来请求数据
 
-The general consensus is to use the Context API plus React hooks for global state management in small applications, and Redux for large applications. However, this advice is not always helpful, so let's explore further.
+component不应该用请求的数据，这样不符合逻辑，因为请求数据应该在redux中完成，而不是在不使用这个数据的组件中完成
 
-There is never a single right answer that fits every project. The choice between these solutions depends entirely on the project's needs.
+![Screenshot 2025-12-29 at 11.45.05 pm](assets/Screenshot%202025-12-29%20at%2011.45.05%E2%80%AFpm.png)
 
-For example, if you only need to share a value that does not change often, the Context API is perfect. Examples include the app color theme, user's preferred language, or the currently authenticated user. These values rarely change, so optimization is not necessary.
+![Screenshot 2025-12-29 at 11.47.20 pm](assets/Screenshot%202025-12-29%20at%2011.47.20%E2%80%AFpm.png)
 
-On the other hand, if you have lots of UI state that requires frequent updates, such as shopping carts, currently open tabs, or complex data filters, Redux might be the better choice. Redux is heavily optimized for frequent updates.
+# redux-thunk
 
-Redux is also ideal for complex state with nested objects because Redux Toolkit allows mutating state in a helpful way.
+异步处理：
 
-These situations where Redux is preferred are not very common for UI state, which explains why Redux has fallen somewhat out of favor recently.
+dispatch一个函数，需要用到redux-thunk 这个插件才成dispatch(foo: function)
 
-The Context API can be very helpful for solving simple prop drilling problems or managing state in a local sub-tree of the application. This is not truly global state but state global to a smaller sub-part of the app.
+`foo(dispatch, getState)`
 
-An important use case of this is the advanced compound component pattern, which will be studied later.
+foo接受两个参数，dispatch和getState，可以在then的回掉里面用
 
-Ultimately, you need to choose what is best for your particular project and not simply follow trends you read about online. This principle applies to every technological choice you make.
+![Screenshot 2025-12-30 at 12.26.45 am](assets/Screenshot%202025-12-30%20at%2012.26.45%E2%80%AFam.png)
 
-The debate between Context API and Redux has been ongoing in the React community for some time, which is why this discussion is important.
+```js
+function fetchHomeMultidataAction(){
+	function foo(){
+	...
+  }
+  return foo
+}
+```
 
-With this, we have finished another section. I hope you now feel confident with Redux, and I look forward to seeing you back here very soon.
+![Screenshot 2025-12-30 at 12.27.54 am](assets/Screenshot%202025-12-30%20at%2012.27.54%E2%80%AFam.png)
 
-## Key Takeaways
+![Screenshot 2025-12-30 at 10.21.06 pm](assets/Screenshot%202025-12-30%20at%2010.21.06%E2%80%AFpm.png)
 
-- The Context API combined with useReducer is built into React and suitable for simple global state management with infrequent updates.
-- Redux requires additional setup but excels in managing complex, frequently updated state with built-in optimizations and middleware support.
-- Context API can lead to "provider hell" when managing multiple state slices, whereas Redux simplifies adding new slices without extra providers.
-- Choosing between Context API and Redux depends on project needs; avoid following trends blindly and select the tool best suited for your application's complexity and state management requirements.
+![Screenshot 2025-12-30 at 10.21.18 pm](assets/Screenshot%202025-12-30%20at%2010.21.18%E2%80%AFpm.png)
+
+### combineReducer的原理（了解）
+
+![Screenshot 2025-12-31 at 12.09.18 pm](assets/Screenshot%202025-12-31%20at%2012.09.18%E2%80%AFpm.png)
+
+# redux toolkit
+
+![Screenshot 2025-12-31 at 6.54.15 pm](assets/Screenshot%202025-12-31%20at%206.54.15%E2%80%AFpm.png)
+
+![Screenshot 2025-12-31 at 7.18.39 pm](assets/Screenshot%202025-12-31%20at%207.18.39%E2%80%AFpm.png)
