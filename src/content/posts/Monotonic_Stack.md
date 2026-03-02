@@ -1,7 +1,7 @@
 ---
 title: Monotonic Stack
 date: 2025-08-27
-sticky: true
+sticky: 1
 category: 'leetcode'
 ---
 
